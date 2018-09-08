@@ -1,0 +1,51 @@
+server:
+  port: 8081
+
+spring:
+  security:
+    user:
+      name: admin
+      password: test
+
+  jpa:
+    database: h2
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    generate-ddl: true
+
+  datasource:
+    url: jdbc:h2:mem:store;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
+      path: /console
+      settings:
+        trace: false
+        web-allow-others: false
+
+
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  jta:
+    atomikos:
+      properties:
+        default-max-wait-time-on-shutdown:
+    bitronix:
+      properties:
+        warn-about-zero-resource-transaction:
+
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml
+
+
+
+logging:
+  level:
+    ROOT: info
