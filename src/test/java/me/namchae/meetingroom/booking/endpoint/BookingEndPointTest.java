@@ -2,7 +2,6 @@ package me.namchae.meetingroom.booking.endpoint;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.namchae.meetingroom.booking.domain.Booking;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +17,6 @@ import javax.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Transactional
 @SpringBootTest
+
 @RunWith(SpringJUnit4ClassRunner.class)
 public class BookingEndPointTest {
 
@@ -38,7 +37,6 @@ public class BookingEndPointTest {
     private ObjectMapper objectMapper;
 
     private MockMvc mockMvc;
-
 
     private BookingTime correctBookingTime;
 
@@ -56,7 +54,7 @@ public class BookingEndPointTest {
     }
 
     @Test
-    public void 시작시간_10분으로_요청_실패() throws Exception {
+    public void 요청검증_시작시간_10분일때_실패() throws Exception {
         // given
         LocalTime startTime = LocalTime.of(11, 10);
         LocalTime endTime = LocalTime.of(12, 0);
@@ -80,7 +78,7 @@ public class BookingEndPointTest {
     }
 
     @Test
-    public void 시작시간_종료시간_반대일_경우_실패() throws Exception {
+    public void 요청검증_시작시간_종료시간_반대일_경우_실패() throws Exception {
         // given
         LocalTime startTime = LocalTime.of(12, 0);
         LocalTime endTime = LocalTime.of(11, 0);
@@ -103,7 +101,7 @@ public class BookingEndPointTest {
     }
 
     @Test
-    public void 과거날짜_요청시_실패() throws Exception {
+    public void 요청검증_과거날짜_요청시_실패() throws Exception {
         // given
         LocalDate useDate = LocalDate.now().minusDays(1);
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희")
@@ -121,7 +119,7 @@ public class BookingEndPointTest {
     }
 
     @Test
-    public void 회의실명_없을경우_실패() throws Exception {
+    public void 요청검증_회의실이름_없을경우_실패() throws Exception {
         // given
         LocalDate useDate = LocalDate.now();
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희")
@@ -139,7 +137,7 @@ public class BookingEndPointTest {
     }
 
     @Test
-    public void 예약자명_1자리_경우_실패() throws Exception {
+    public void 요청검증_예약자명_1자리_경우_실패() throws Exception {
         // given
         LocalDate useDate = LocalDate.now();
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남")
@@ -157,7 +155,7 @@ public class BookingEndPointTest {
     }
 
     @Test
-    public void 예약자명_10자리_넘을경우_실패() throws Exception {
+    public void 요청검증_예약자명_10자리_넘을경우_실패() throws Exception {
         // given
         LocalDate useDate = LocalDate.now();
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희희희희희희희희희")
@@ -175,14 +173,32 @@ public class BookingEndPointTest {
     }
 
     @Test
-    public void 반복횟수_음수일_경우_실패() throws Exception {
+    public void 요청검증_반복횟수_음수일_경우_실패() throws Exception {
         // given
         LocalDate useDate = LocalDate.now();
-        BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희희희희희희희희희")
+        BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희")
                 .roomType("회의실F")
                 .useDate(useDate)
                 .bookingTime(correctBookingTime)
                 .repetitionCount(-2)
+                .build();
+
+        // when then
+        mockMvc.perform(post("/bookings").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+                .content(objectToJson(createReq)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void 요청검증_반복횟수_0일_경우_실패() throws Exception {
+        // given
+        LocalDate useDate = LocalDate.now();
+        BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희")
+                .roomType("회의실F")
+                .useDate(useDate)
+                .bookingTime(correctBookingTime)
+                .repetitionCount(0)
                 .build();
 
         // when then

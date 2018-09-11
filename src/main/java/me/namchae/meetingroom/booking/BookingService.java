@@ -8,7 +8,6 @@ import me.namchae.meetingroom.booking.domain.BookingTimeLine;
 import me.namchae.meetingroom.booking.repository.BookingRepository;
 import me.namchae.meetingroom.booking.repository.BookingTimeLineRepository;
 import me.namchae.meetingroom.booking.exception.DuplicateBookingException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static me.namchae.meetingroom.booking.helper.TimeHelper.getBetweenTimes;
@@ -33,13 +33,13 @@ public class BookingService {
     public Booking execute(BookingDto.CreateReq createReq) {
         final Booking booking = createReq.toEntity();
 
-        Booking returnBooking;
-        try {
-            returnBooking = bookingRepository.save(booking);
-        } catch (DataIntegrityViolationException ex) {
-            throw new DuplicateBookingException(ex.getMessage());
+        for (BookingTimeLine timeLine : booking.getBookingTimeLines()) {
+            Optional<BookingTimeLine> timeLineOptional = bookingTimeLineRepository.findByRoomTypeAndUseDateTime(timeLine.getRoomType(), timeLine.getUseDateTime());
+            if (timeLineOptional.isPresent()) {
+                throw new DuplicateBookingException(timeLine.getRoomType(), timeLine.getUseDateTime());
+            }
         }
-        return returnBooking;
+        return bookingRepository.save(booking);
     }
 
     @Transactional(readOnly = true)

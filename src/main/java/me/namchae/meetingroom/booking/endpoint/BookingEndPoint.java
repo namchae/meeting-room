@@ -32,7 +32,6 @@ public class BookingEndPoint {
     public BookingDto.Response bookingExecute(
             @ApiParam(value = "예약 요청 정보", required = true) @Valid @RequestBody BookingDto.CreateReq createReq) {
         log.info("request : {}", createReq);
-//        validTimeRange(createReq.getStartTime(), createReq.getEndTime());
         return new BookingDto.Response(bookingService.execute(createReq));
     }
 

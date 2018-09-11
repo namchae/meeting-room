@@ -13,27 +13,6 @@ public class TimeHelper {
 
     private static final long LIMIT_MINUTE = 30;
 
-    // 종료시간이 시작시간보다 이전일 경우 확인
-//    public static boolean validTimeRange(LocalTime startTime, LocalTime endTime) {
-//        validThirtyMinute(startTime, endTime);
-//
-//        if (startTime.isAfter(endTime)) {
-//            throw new InValidRangeException(startTime, endTime);
-//        }
-//        return true;
-//    }
-
-    // 30분단위 요청 확인
-//    public static boolean validThirtyMinute(LocalTime... times) {
-//
-//        for (LocalTime time : times) {
-//            if (time.getMinute() % LIMIT_MINUTE != 0) {
-//                throw new InValidThirtyMinutesException(time);
-//            }
-//        }
-//        return true;
-//    }
-
     //시작 - 종료시간 30분 단위 List 생성
     public static List<LocalTime> getRangeTimeList(LocalTime startTime, LocalTime endTime) {
         List<LocalTime> times = Lists.newArrayList();

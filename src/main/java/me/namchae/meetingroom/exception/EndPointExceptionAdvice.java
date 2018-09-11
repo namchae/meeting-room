@@ -26,9 +26,9 @@ public class EndPointExceptionAdvice {
     @ExceptionHandler({DuplicateBookingException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
-    public ErrorResponse onProductNotFoundException(DuplicateBookingException e) {
+    public ErrorResponse onDuplicateBookingException(DuplicateBookingException e) {
         log.error(e.getMessage(), e);
-        return new ErrorResponse(ErrorCode.DUPLICATE_BOOKING, String.format("요청한 예약건은 이미 존재합니다."));
+        return new ErrorResponse(ErrorCode.DUPLICATE_BOOKING, e.getMessage());
     }
 
     // 공통 Exception Handler

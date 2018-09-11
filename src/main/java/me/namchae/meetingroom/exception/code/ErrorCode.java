@@ -9,10 +9,6 @@ public enum ErrorCode {
     INVALID_REQUEST,
     REQUEST_PARAMETER_NOT_VALID,
 
-    //TODO: 삭제.
-    INVALID_RANGE_TIME,
-    INVALID_THIRTY_TIME,
-
     DUPLICATE_BOOKING,
 
 
