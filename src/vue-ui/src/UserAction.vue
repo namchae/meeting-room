@@ -1,8 +1,8 @@
 <template>
     <div class="cd-schedule js-full">
         <span>{{BaseVo.useDay}}</span>
-        <button class="btn btn-primary">이전일</button>
-        <button class="btn btn-primary">다음일</button>
+        <button class="btn btn-primary" v-on:click="Controller().beforeDay()">이전일</button>
+        <button class="btn btn-primary" v-on:click="Controller().afterDay()">다음일</button>
         <button class="btn btn-primary" v-on:click="Controller().openRegModal()">등록</button>
         <div class="modal d-block" v-if="ViewStatusVo.reg">
             <div class="modal-dialog">
@@ -34,13 +34,13 @@
                                 <th>회의실</th>
                                 <td>
                                     <select v-model="RegModalVo.roomType">
-                                        <option value="roomA">회의실A</option>
-                                        <option value="roomB">회의실B</option>
-                                        <option value="roomC">회의실C</option>
-                                        <option value="roomD">회의실D</option>
-                                        <option value="roomE">회의실E</option>
-                                        <option value="roomF">회의실F</option>
-                                        <option value="roomG">회의실G</option>
+                                        <option value="회의실A">회의실A</option>
+                                        <option value="회의실B">회의실B</option>
+                                        <option value="회의실C">회의실C</option>
+                                        <option value="회의실D">회의실D</option>
+                                        <option value="회의실E">회의실E</option>
+                                        <option value="회의실F">회의실F</option>
+                                        <option value="회의실G">회의실G</option>
                                     </select>
                                 </td>
                             </tr>
@@ -61,6 +61,8 @@
     </div>
 </template>
 <script>
+  import { eventBus } from './main.js'
+
   export default {
     name: 'UserAction',
     data() {
@@ -73,7 +75,7 @@
         },
         RegModalVo: {
           id: '',
-          roomType: 'roomA',
+          roomType: '회의실A',
           useDay: '',
           startTime: '',
           endTime: '',
@@ -87,6 +89,7 @@
     },
     mounted: function () {
         this.DataBind().setUseDay(this.moment().format('YYYY-MM-DD'))
+        this.Dao().list.excute()
     },
     methods: {
       Controller() {
@@ -99,6 +102,16 @@
           openRegModal() {
             self.DataBind().initRegModal()
             self.ViewStatusVo.reg = true
+          },
+          beforeDay() {
+            let useDay = self.moment(self.BaseVo.useDay, 'YYYY-MM-DD')
+            self.DataBind().setUseDay(useDay.add(-1, 'day').format('YYYY-MM-DD'))
+            self.Dao().list.excute()
+          },
+          afterDay() {
+            let useDay = self.moment(self.BaseVo.useDay, 'YYYY-MM-DD')
+            self.DataBind().setUseDay(useDay.add(1, 'day').format('YYYY-MM-DD'))
+            self.Dao().list.excute()
           },
           submitReg() {
             self.ErrorVo.hasError = false
@@ -135,7 +148,6 @@
               self.ErrorVo.hasError = true
               self.ErrorVo.message = '시작 시간은 종료 시간이전 이어야 합니다.'
             }
-            console.log('check', startIn.isBefore(endIn), startIn, endIn, startCheck, endCheck)
             if ( !self.ErrorVo.hasError ) {
               self.Dao().reg.excute()
             }
@@ -147,27 +159,54 @@
         return {
           reg: {
             excute() {
-              console.log('등록하러가자')
-/*
-              let sendObj = self.LoginVo
-              self.axios.post('/members/login', sendObj, null)
+              let sendObj = {}
+              sendObj.booker = self.RegModalVo.id
+              sendObj.bookingTime = {}
+              sendObj.bookingTime.startTime = self.RegModalVo.startTime + ':00'
+              sendObj.bookingTime.endTime = self.RegModalVo.endTime + ':00'
+              sendObj.repetitionCount = self.RegModalVo.repeatCnt
+              sendObj.roomType = self.RegModalVo.roomType
+              sendObj.useDate = self.RegModalVo.useDay
+              self.axios.post('/bookings', sendObj, null)
                 .then(response => {
-                  self.Dao().reg.complate(response)
+                  self.Dao().reg.complate(response.data, sendObj.useDate)
                 })
                 .catch(error => {
                   self.Dao().reg.error(error)
                 })
-*/
+            },
+            error(error) {
+              if ( error.response.data.message != undefined ) {
+                alert(error.response.data.message)
+              } else {
+                alert('등록에 실패 하였습니다.')
+              }
+              self.Controller().closeRegModal()
+            },
+            complate(responseData, useDay) {
+              alert('등록에 성공 하였습니다.')
+              self.Controller().closeRegModal()
+              self.DataBind().setUseDay(useDay)
+              self.Dao().list.excute()
+            }
+          },
+          list: {
+            excute() {
+              let sendDay = self.BaseVo.useDay
+              self.axios.get('/bookings/' + self.BaseVo.useDay, null)
+              .then(response => {
+                self.Dao().list.complate(response.data)
+              })
+              .catch(error => {
+                self.Dao().list.error(error)
+              })
             },
             error(error) {
 
             },
             complate(responseData) {
-
+              eventBus.$emit('DataBind.events', responseData)
             }
-          },
-          list: {
-
           }
         }
       },
@@ -176,7 +215,7 @@
         return {
           initRegModal() {
             self.RegModalVo.id = '',
-            self.RegModalVo.roomType = 'roomA'
+            self.RegModalVo.roomType = '회의실A'
             self.RegModalVo.useDay = ''
             self.RegModalVo.startTime = ''
             self.RegModalVo.endTime = ''

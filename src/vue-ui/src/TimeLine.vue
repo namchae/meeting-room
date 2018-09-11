@@ -108,101 +108,65 @@
 </template>
 <script>
   import Event from './Event.vue'
+  import { eventBus } from './main.js'
 
   export default {
     name: 'TimeLine',
-    data() {
-      return {
-        EventVo: {
-          roomA: [
-            {
-              startTime: '09:30',
-              endTime: '10:30',
-              content: '예약1'
-            },
-            {
-              startTime: '11:30',
-              endTime: '12:30',
-              content: '예약2'
-            },
-          ],
-          roomB: [
-            {
-              startTime: '10:00',
-              endTime: '10:30',
-              content: '예약1'
-            },
-            {
-              startTime: '11:30',
-              endTime: '12:30',
-              content: '예약2'
-            },
-          ],
-          roomC: [
-            {
-              startTime: '10:30',
-              endTime: '11:00',
-              content: '예약1'
-            },
-            {
-              startTime: '11:30',
-              endTime: '12:30',
-              content: '예약2'
-            },
-          ],
-          roomD: [
-            {
-              startTime: '09:30',
-              endTime: '10:30',
-              content: '예약1'
-            },
-            {
-              startTime: '11:30',
-              endTime: '12:30',
-              content: '예약2'
-            },
-          ],
-          roomE: [
-            {
-              startTime: '09:30',
-              endTime: '10:30',
-              content: '예약1'
-            },
-            {
-              startTime: '11:30',
-              endTime: '12:30',
-              content: '예약2'
-            },
-          ],
-          roomF: [
-            {
-              startTime: '09:30',
-              endTime: '10:30',
-              content: '예약1'
-            },
-            {
-              startTime: '11:30',
-              endTime: '12:30',
-              content: '예약2'
-            },
-          ],
-          roomG: [
-            {
-              startTime: '09:30',
-              endTime: '10:30',
-              content: '예약1'
-            },
-            {
-              startTime: '11:30',
-              endTime: '12:30',
-              content: '예약2'
-            },
-          ],
+    methods: {
+      DataBind() {
+        let self = this
+        return {
+          setEvent(eventData) {
+            self.EventVo.roomA = []
+            self.EventVo.roomB = []
+            self.EventVo.roomC = []
+            self.EventVo.roomD = []
+            self.EventVo.roomE = []
+            self.EventVo.roomF = []
+            self.EventVo.roomG = []
+            for ( let i in eventData ) {
+              let tmpEvent = {}
+              tmpEvent.startTime = eventData[i].bookingTime.startTime.substring(0,5)
+              tmpEvent.endTime = eventData[i].bookingTime.endTime.substring(0,5)
+              tmpEvent.content = eventData[i].booker + '-반복[' + eventData[i].repetitionCount + ']'
+              if ( eventData[i].roomType === "회의실A" ) {
+                self.EventVo.roomA.push(tmpEvent)
+              } else if ( eventData[i].roomType === "회의실B" ) {
+                self.EventVo.roomB.push(tmpEvent)
+              } else if ( eventData[i].roomType === "회의실C" ) {
+                self.EventVo.roomC.push(tmpEvent)
+              } else if ( eventData[i].roomType === "회의실D" ) {
+                self.EventVo.roomD.push(tmpEvent)
+              } else if ( eventData[i].roomType === "회의실E" ) {
+                self.EventVo.roomE.push(tmpEvent)
+              } else if ( eventData[i].roomType === "회의실F" ) {
+                self.EventVo.roomF.push(tmpEvent)
+              } else if ( eventData[i].roomType === "회의실G" ) {
+                self.EventVo.roomG.push(tmpEvent)
+              }
+            }
+          }
         }
       }
     },
-    computed: {
-//    forSale() { return this.$store.getters.forSale; },
+    data() {
+      return {
+        EventVo: {
+          roomA: [],
+          roomB: [],
+          roomC: [],
+          roomD: [],
+          roomE: [],
+          roomF: [],
+          roomG: [],
+        }
+      }
+    },
+    created() {
+      let self = this
+      eventBus.$on('DataBind.events', function (eventData) {
+        self.DataBind().setEvent(eventData)
+      })
     },
     components: {
       Event
