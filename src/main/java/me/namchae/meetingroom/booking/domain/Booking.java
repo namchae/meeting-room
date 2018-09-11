@@ -45,7 +45,7 @@ public class Booking {
         for (LocalDate repetitionUseDate : createReq.repetitionDate()) {
             List<LocalTime> times = TimeHelper.getRangeTimeList(createReq.getBookingTime().getStartTime(), createReq.getBookingTime().getEndTime());
             for (LocalTime time : times) {
-                BookingTimeLine timeLine = createReq.toTimeLine(this, LocalDateTime.of(repetitionUseDate, time), time);
+                BookingTimeLine timeLine = createReq.toTimeLine(this, LocalDateTime.of(repetitionUseDate, time));
                 this.bookingTimeLines.add(timeLine);
             }
         }

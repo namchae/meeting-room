@@ -1,8 +1,7 @@
 package me.namchae.meetingroom.booking.helper;
 
 import com.google.common.collect.Lists;
-import me.namchae.meetingroom.booking.exception.InValidThirtyMinutesException;
-import me.namchae.meetingroom.booking.exception.InValidRangeException;
+
 import org.springframework.data.util.Pair;
 
 import java.time.LocalDate;

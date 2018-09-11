@@ -1,6 +1,5 @@
 package me.namchae.meetingroom.booking.endpoint;
 
-import me.namchae.meetingroom.booking.endpoint.BookingDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -18,12 +17,14 @@ public class BookingDtoTest {
     @Before
     public void setUp() {
         validator = new LocalValidatorFactoryBean();
+
         createReq = BookingDto.CreateReq.builder()
                 .roomType("회의실B")
                 .booker("예약자")
                 .useDate(LocalDate.now())
-                .startTime(LocalTime.of(11, 00))
-                .endTime(LocalTime.of(12, 00))
+                .bookingTime(BookingTime.builder().startTime(LocalTime.of(11, 00))
+                        .endTime(LocalTime.of(12, 00))
+                        .build())
                 .repetitionCount(3)
                 .build();
     }
@@ -46,7 +47,7 @@ public class BookingDtoTest {
         System.out.println(
         createReq.toString());
 
-        System.out.println(createReq.getRepetitionDate());
+        System.out.println(createReq.repetitionDate());
     }
 
 }

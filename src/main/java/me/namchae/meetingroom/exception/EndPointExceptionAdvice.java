@@ -3,8 +3,6 @@ package me.namchae.meetingroom.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import me.namchae.meetingroom.booking.exception.DuplicateBookingException;
-import me.namchae.meetingroom.booking.exception.InValidRangeException;
-import me.namchae.meetingroom.booking.exception.InValidThirtyMinutesException;
 import me.namchae.meetingroom.exception.code.ErrorCode;
 import me.namchae.meetingroom.exception.domain.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -24,25 +22,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @ControllerAdvice
 public class EndPointExceptionAdvice {
-
-
-    // 시작시간 종료시간 Exception Handler
-    @ExceptionHandler({InValidRangeException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ErrorResponse onInValidRangeException(InValidRangeException e) {
-        log.error(e.getMessage(), e);
-        return new ErrorResponse(ErrorCode.INVALID_RANGE_TIME, e.getMessage());
-    }
-
-    // 요청시간 30분단위 Exception Handler
-    @ExceptionHandler({InValidThirtyMinutesException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ErrorResponse onInValidThirtyMinutesException(InValidThirtyMinutesException e) {
-        log.error(e.getMessage(), e);
-        return new ErrorResponse(ErrorCode.INVALID_THIRTY_TIME, e.getMessage());
-    }
 
     @ExceptionHandler({DuplicateBookingException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
