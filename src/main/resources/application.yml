@@ -40,11 +40,6 @@ spring:
       properties:
         warn-about-zero-resource-transaction:
 
-  cache:
-    ehcache:
-      config: classpath:ehcache.xml
-
-
 
 logging:
   level:

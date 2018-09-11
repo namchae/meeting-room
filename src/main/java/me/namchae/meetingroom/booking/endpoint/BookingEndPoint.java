@@ -1,12 +1,12 @@
-package me.namchae.meetingroom.booking;
+package me.namchae.meetingroom.booking.endpoint;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.namchae.meetingroom.booking.BookingService;
 import me.namchae.meetingroom.booking.domain.Booking;
-import me.namchae.meetingroom.booking.domain.BookingDto;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static me.namchae.meetingroom.booking.helper.TimeHelper.validTimeRange;
 
 @Slf4j
 @Api("예약 API")
@@ -36,7 +32,7 @@ public class BookingEndPoint {
     public BookingDto.Response bookingExecute(
             @ApiParam(value = "예약 요청 정보", required = true) @Valid @RequestBody BookingDto.CreateReq createReq) {
         log.info("request : {}", createReq);
-        validTimeRange(createReq.getStartTime(), createReq.getEndTime());
+//        validTimeRange(createReq.getStartTime(), createReq.getEndTime());
         return new BookingDto.Response(bookingService.execute(createReq));
     }
 

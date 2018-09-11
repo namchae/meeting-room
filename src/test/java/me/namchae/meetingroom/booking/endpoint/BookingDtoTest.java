@@ -1,4 +1,4 @@
-package me.namchae.meetingroom.booking.domain;
+package me.namchae.meetingroom.booking.endpoint;
 
 import me.namchae.meetingroom.booking.endpoint.BookingDto;
 import org.junit.Before;
@@ -30,15 +30,15 @@ public class BookingDtoTest {
 
     @Test
     public void DTO_테스트() {
-        BookingDto.CreateReq tmpObj = BookingDto.CreateReq.builder()
-                .roomType(null)
-                .booker("예약자")
-                .useDate(LocalDate.now())
-                .startTime(LocalTime.of(11, 00))
-                .endTime(LocalTime.of(12, 00))
-                .repetitionCount(3)
-                .build();
-        validator.validateProperty(tmpObj, "roomType");
+//        BookingDto.CreateReq tmpObj = BookingDto.CreateReq.builder()
+//                .roomType(null)
+//                .booker("예약자")
+//                .useDate(LocalDate.now())
+//                .startTime(LocalTime.of(11, 00))
+//                .endTime(LocalTime.of(12, 00))
+//                .repetitionCount(3)
+//                .build();
+//        validator.validateProperty(tmpObj, "roomType");
     }
 
     @Test

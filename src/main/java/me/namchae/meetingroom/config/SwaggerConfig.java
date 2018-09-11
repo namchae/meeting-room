@@ -1,4 +1,4 @@
-package me.namchae.reservation.config;
+package me.namchae.meetingroom.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,14 +18,10 @@ import java.util.ArrayList;
 @EnableSwagger2
 public class SwaggerConfig {
 
-    @Bean
-    public Docket memberGroup() {
-        return buildGroup("회원 API", "me.namchae.reservation.member", "Member API", "회원관련 API 정의 (회원가입, 로그인, 로그아웃)");
-    }
 
     @Bean
-    public Docket productGroup() {
-        return buildGroup("예약 API", "me.namchae.reservation.reservation", "Product API", "상품관련 API 정의 (상품등록, 상품리스트, 상품삭제)");
+    public Docket bookingGroup() {
+        return buildGroup("예약 API", "me.namchae.meetingroom.booking", "예약 API", "회의실 예약 관련 API 정의");
     }
 
     private Docket buildGroup(String groupName, String packages, String apiName, String apiDesc) {

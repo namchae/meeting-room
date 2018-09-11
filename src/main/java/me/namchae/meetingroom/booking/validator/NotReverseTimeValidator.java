@@ -1,20 +1,20 @@
 package me.namchae.meetingroom.booking.validator;
 
-import me.namchae.meetingroom.booking.endpoint.RequestTime;
+import me.namchae.meetingroom.booking.endpoint.BookingTime;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 
-public class TimeReverseValidator implements ConstraintValidator<TimeReverse, RequestTime> {
+public class NotReverseTimeValidator implements ConstraintValidator<NotReverseTime, BookingTime> {
 
 
     @Override
-    public void initialize(TimeReverse timeReverse) {
+    public void initialize(NotReverseTime notReverseTime) {
     }
 
     @Override
-    public boolean isValid(RequestTime requestTime, ConstraintValidatorContext cxt) {
-        return requestTime.getEndTime().isAfter(requestTime.getStartTime());
+    public boolean isValid(BookingTime bookingTime, ConstraintValidatorContext cxt) {
+        return bookingTime.getEndTime().isAfter(bookingTime.getStartTime());
     }
 }

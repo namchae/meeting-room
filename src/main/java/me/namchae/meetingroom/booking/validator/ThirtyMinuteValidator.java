@@ -1,17 +1,20 @@
 package me.namchae.meetingroom.booking.validator;
 
-import javax.validation.ConstraintValidatorContext;
 
-public class ThirtyMinuteValidator implements ConstraintValidator<Phone, String> {
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import java.time.LocalTime;
+
+public class ThirtyMinuteValidator implements ConstraintValidator<ThirtyMinute, LocalTime> {
+
+    private static final long LIMIT_MINUTE = 30;
 
     @Override
-    public void initialize(Phone phone) {
-    
+    public void initialize(ThirtyMinute thirtyMinute) {
     }
  
     @Override
-    public boolean isValid(String field, ConstraintValidatorContext cxt) {
-        return field != null && field.matches("[0-9]+")
-                && (field.length() > 8) && (field.length() < 14);
+    public boolean isValid(LocalTime localTime, ConstraintValidatorContext cxt) {
+        return (localTime.getMinute() % LIMIT_MINUTE) == 0;
     }
 }

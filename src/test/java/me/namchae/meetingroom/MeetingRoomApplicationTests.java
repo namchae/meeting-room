@@ -1,4 +1,4 @@
-package me.namchae.reservation;
+package me.namchae.meetingroom;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

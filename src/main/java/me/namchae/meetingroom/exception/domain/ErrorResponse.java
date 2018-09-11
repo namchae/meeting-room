@@ -1,10 +1,10 @@
-package com.kakaoix.store.exception.domain;
+package me.namchae.meetingroom.exception.domain;
 
-import com.kakaoix.store.exception.code.ErrorCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import me.namchae.meetingroom.exception.code.ErrorCode;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package me.namchae.meetingroom.exception;
+package me.namchae.meetingroom.booking.exception;
 
 import lombok.Getter;
 

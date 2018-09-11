@@ -1,17 +1,22 @@
-package me.namchae.meetingroom.booking.domain;
+package me.namchae.meetingroom.booking.endpoint;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import me.namchae.meetingroom.booking.domain.Booking;
+import me.namchae.meetingroom.booking.domain.BookingTimeLine;
+import me.namchae.meetingroom.booking.validator.NotPastTime;
+import me.namchae.meetingroom.booking.validator.NotReverseTime;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class BookingDto {
 
@@ -35,29 +40,25 @@ public class BookingDto {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDate useDate;
 
-        @NotNull
-        @ApiModelProperty(notes = "예약_시작시간", required = true, example = "11:00:00")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
-        private LocalTime startTime;
-
-        @NotNull
-        @ApiModelProperty(notes = "예약_종료시간", required = true, example = "12:00:00")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
-        private LocalTime endTime;
+        @Valid
+        @NotReverseTime
+        @ApiModelProperty(notes = "예약 시간정보", required = true)
+        private BookingTime bookingTime;
 
         @Positive
         @ApiModelProperty(notes = "반복횟수", required = true, example = "3")
         private int repetitionCount;
 
         @Builder
-        public CreateReq(String roomType, String booker, LocalDate useDate, LocalTime startTime, LocalTime endTime, int repetitionCount) {
+        public CreateReq(String roomType, String booker, LocalDate useDate, BookingTime bookingTime, int repetitionCount) {
             this.roomType = roomType;
             this.booker = booker;
             this.useDate = useDate;
-            this.startTime = startTime;
-            this.endTime = endTime;
+            this.bookingTime = bookingTime;
             this.repetitionCount = repetitionCount;
         }
+
+
 
         public Booking toEntity() {
             return Booking.builder().booker(this.booker)
@@ -65,7 +66,7 @@ public class BookingDto {
                     .build();
         }
 
-        BookingTimeLine toTimeLine(Booking booking, LocalDateTime useDateTime, LocalTime time) {
+        public BookingTimeLine toTimeLine(Booking booking, LocalDateTime useDateTime) {
             return BookingTimeLine.builder()
                     .booking(booking)
                     .useDateTime(useDateTime)
@@ -73,7 +74,7 @@ public class BookingDto {
                     .build();
         }
 
-        List<LocalDate> getRepetitionDate() {
+        public List<LocalDate> repetitionDate() {
             LocalDate inUseDate = this.useDate;
 
             List<LocalDate> repetitionDateList = Lists.newArrayList();
@@ -89,6 +90,22 @@ public class BookingDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @ToString
+    @ApiModel(value = "BookingDto.ListReq", description = "예약 리스트 요청")
+    public static class ListReq {
+
+        @NotNull
+        @ApiModelProperty(notes = "예약 날짜", required = true, example = "2018-09-03")
+        private LocalDate useDate;
+
+        @Builder
+        public ListReq(LocalDate useDate) {
+            this.useDate = useDate;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @ToString
     @ApiModel(value = "BookingDto.Response", description = "예약 리스트 요청")
     public static class Response {
 
@@ -98,17 +115,8 @@ public class BookingDto {
         @ApiModelProperty(notes = "회의실_타입", required = true, example = "회의실A")
         private String roomType;
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
-        @ApiModelProperty(notes = "예약_시작시간", required = true, example = "11:00:00")
-        private LocalTime startTime;
-
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
-        @ApiModelProperty(notes = "예약_종료시간", required = true, example = "12:00:00")
-        private LocalTime endTime;
-
-//        @ApiModelProperty(notes = "예약_타임리스트", required = true)
-//        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-//        private List<LocalDateTime> bookingDateList = Lists.newArrayList();
+        @ApiModelProperty(notes = "예약 시간정보", required = true)
+        private BookingTime bookingTime;
 
         private int repetitionCount;
 
@@ -121,35 +129,12 @@ public class BookingDto {
 
             this.roomType = firstTimeLine.getRoomType();
 
-            this.startTime = firstTimeLine.getUseDateTime().toLocalTime();
-            this.endTime = finalTimeLine.getUseDateTime().toLocalTime().plusMinutes(30);
+            this.bookingTime = BookingTime.builder()
+                    .startTime(firstTimeLine.getUseDateTime().toLocalTime())
+                    .endTime(finalTimeLine.getUseDateTime().toLocalTime().plusMinutes(30))
+                    .build();
 
             this.repetitionCount = booking.getRepetitionCount();
-
-//            this.bookingDateList = timeLines.stream()
-//                    .map(BookingTimeLine::getUseDateTime)
-//                    .distinct()
-//                    .collect(Collectors.toList());
-        }
-
-
-
-    }
-
-
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @ToString
-    @ApiModel(value = "BookingDto.ListReq", description = "예약 리스트 요청")
-    public static class ListReq {
-
-        @NotNull
-        @ApiModelProperty(notes = "예약 날짜", required = true, example = "2018-09-03")
-        private LocalDate useDate;
-
-        @Builder
-        public ListReq(LocalDate useDate) {
-            this.useDate = useDate;
         }
     }
 }

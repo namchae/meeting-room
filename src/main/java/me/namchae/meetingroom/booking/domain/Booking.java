@@ -1,41 +1,53 @@
-package me.namchae.meetingroom.reservation.domain;
+package me.namchae.meetingroom.booking.domain;
 
+
+import com.google.common.collect.Lists;
 import lombok.*;
+import me.namchae.meetingroom.booking.endpoint.BookingDto;
+import me.namchae.meetingroom.booking.helper.TimeHelper;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
-@Table(name = "meetingroom")
+@Table(name = "booking")
 @Getter
-@ToString
+@ToString(exclude = "bookingTimeLines")
 @EntityListeners(value = {AuditingEntityListener.class})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reservation {
+public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reservation_id")
+    @Column(name = "booking_id")
     private Long id;
 
-
-//    @ManyToOne(fetch  = FetchType.LAZY)
-//    @JoinColumn(name = "user_name", nullable = false)
-    @Column(name = "user_name", nullable = false)
-    private String userName;
+    @Column(name = "booker", nullable = false)
+    private String booker;
 
     @Column(name = "repetition_count", nullable = false)
     private Integer repetitionCount;
 
-    @OneToMany(mappedBy = "meetingroom", cascade = CascadeType.ALL, fetch  = FetchType.LAZY)
-    private List<ReservationTimeLine> reservationTimeLines = new ArrayList<>();
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<BookingTimeLine> bookingTimeLines = Lists.newArrayList();
 
     @Builder
-    public Reservation(String userName, Integer repetitionCount, List<ReservationTimeLine> reservationTimeLines) {
-        this.userName = userName;
+    public Booking(String booker, Integer repetitionCount) {
+        this.booker = booker;
         this.repetitionCount = repetitionCount;
-        this.reservationTimeLines = reservationTimeLines;
+    }
+
+    public void addTimeLine(BookingDto.CreateReq createReq) {
+        for (LocalDate repetitionUseDate : createReq.repetitionDate()) {
+            List<LocalTime> times = TimeHelper.getRangeTimeList(createReq.getBookingTime().getStartTime(), createReq.getBookingTime().getEndTime());
+            for (LocalTime time : times) {
+                BookingTimeLine timeLine = createReq.toTimeLine(this, LocalDateTime.of(repetitionUseDate, time), time);
+                this.bookingTimeLines.add(timeLine);
+            }
+        }
     }
 }
