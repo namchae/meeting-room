@@ -46,14 +46,17 @@ public class BookingEndPointTest {
         return objectMapper.writeValueAsString(createReq);
     }
 
+
+
     @Test
     public void 시작시간_10분으로_요청_실패() throws Exception {
         LocalDate useDate = LocalDate.now();
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희")
                 .roomType("회의실B")
                 .useDate(useDate)
-                .startTime(LocalTime.of(13, 10))
-                .endTime(LocalTime.of(14, 00))
+                .bookingTime(BookingTime.builder().startTime(LocalTime.of(11, 10))
+                        .endTime(LocalTime.of(12, 00))
+                        .build())
                 .repetitionCount(2)
                 .build();
 
@@ -69,8 +72,9 @@ public class BookingEndPointTest {
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희")
                 .roomType("회의실B")
                 .useDate(useDate)
-                .startTime(LocalTime.of(14, 00))
-                .endTime(LocalTime.of(13, 00))
+                .bookingTime(BookingTime.builder().startTime(LocalTime.of(12, 00))
+                        .endTime(LocalTime.of(11, 00))
+                        .build())
                 .repetitionCount(2)
                 .build();
 
@@ -86,8 +90,9 @@ public class BookingEndPointTest {
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희")
                 .roomType("회의실B")
                 .useDate(useDate)
-                .startTime(LocalTime.of(13, 00))
-                .endTime(LocalTime.of(14, 00))
+                .bookingTime(BookingTime.builder().startTime(LocalTime.of(11, 00))
+                        .endTime(LocalTime.of(12, 00))
+                        .build())
                 .repetitionCount(2)
                 .build();
 
@@ -103,8 +108,9 @@ public class BookingEndPointTest {
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희")
                 .roomType("")
                 .useDate(useDate)
-                .startTime(LocalTime.of(13, 00))
-                .endTime(LocalTime.of(14, 00))
+                .bookingTime(BookingTime.builder().startTime(LocalTime.of(11, 00))
+                        .endTime(LocalTime.of(12, 00))
+                        .build())
                 .repetitionCount(2)
                 .build();
 
@@ -120,8 +126,9 @@ public class BookingEndPointTest {
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남")
                 .roomType("회의실B")
                 .useDate(useDate)
-                .startTime(LocalTime.of(13, 00))
-                .endTime(LocalTime.of(14, 00))
+                .bookingTime(BookingTime.builder().startTime(LocalTime.of(11, 00))
+                        .endTime(LocalTime.of(12, 00))
+                        .build())
                 .repetitionCount(2)
                 .build();
 
@@ -137,8 +144,9 @@ public class BookingEndPointTest {
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희희희희희희희희희")
                 .roomType("회의실B")
                 .useDate(useDate)
-                .startTime(LocalTime.of(13, 00))
-                .endTime(LocalTime.of(14, 00))
+                .bookingTime(BookingTime.builder().startTime(LocalTime.of(11, 00))
+                        .endTime(LocalTime.of(12, 00))
+                        .build())
                 .repetitionCount(2)
                 .build();
 
@@ -154,8 +162,9 @@ public class BookingEndPointTest {
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희희희희희희희희희")
                 .roomType("회의실B")
                 .useDate(useDate)
-                .startTime(LocalTime.of(13, 00))
-                .endTime(LocalTime.of(14, 00))
+                .bookingTime(BookingTime.builder().startTime(LocalTime.of(11, 00))
+                        .endTime(LocalTime.of(12, 00))
+                        .build())
                 .repetitionCount(-2)
                 .build();
 
@@ -171,8 +180,9 @@ public class BookingEndPointTest {
         BookingDto.CreateReq createReq = BookingDto.CreateReq.builder().booker("남채희")
                 .roomType("회의실B")
                 .useDate(useDate)
-                .startTime(LocalTime.of(13, 00))
-                .endTime(LocalTime.of(14, 00))
+                .bookingTime(BookingTime.builder().startTime(LocalTime.of(11, 00))
+                        .endTime(LocalTime.of(12, 00))
+                        .build())
                 .repetitionCount(2)
                 .build();
 
