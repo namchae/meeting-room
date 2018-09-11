@@ -7,14 +7,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import me.namchae.meetingroom.booking.domain.Booking;
 import me.namchae.meetingroom.booking.domain.BookingTimeLine;
-import me.namchae.meetingroom.booking.validator.NotPastTime;
 import me.namchae.meetingroom.booking.validator.NotReverseTime;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 
@@ -58,12 +56,12 @@ public class BookingDto {
             this.repetitionCount = repetitionCount;
         }
 
-
-
         public Booking toEntity() {
-            return Booking.builder().booker(this.booker)
+            Booking booking = Booking.builder().booker(this.booker)
                     .repetitionCount(this.repetitionCount)
                     .build();
+            booking.addTimeLine(this);
+            return booking;
         }
 
         public BookingTimeLine toTimeLine(Booking booking, LocalDateTime useDateTime) {
@@ -118,8 +116,10 @@ public class BookingDto {
         @ApiModelProperty(notes = "예약 시간정보", required = true)
         private BookingTime bookingTime;
 
+        @ApiModelProperty(notes = "반복횟수", required = true, example = "3")
         private int repetitionCount;
 
+        @Builder
         public Response(Booking booking) {
             this.booker = booking.getBooker();
 

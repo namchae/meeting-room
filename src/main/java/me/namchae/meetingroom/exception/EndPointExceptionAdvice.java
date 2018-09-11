@@ -28,7 +28,7 @@ public class EndPointExceptionAdvice {
     @ResponseBody
     public ErrorResponse onProductNotFoundException(DuplicateBookingException e) {
         log.error(e.getMessage(), e);
-        return new ErrorResponse(ErrorCode.DUPLICATE_BOOKING, String.format("요청한 예약건은 이미 존재합니다. %s", e.getMessage()));
+        return new ErrorResponse(ErrorCode.DUPLICATE_BOOKING, String.format("요청한 예약건은 이미 존재합니다."));
     }
 
     // 공통 Exception Handler

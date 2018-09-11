@@ -20,9 +20,6 @@ public class BookingTimeLine {
     @Column(name = "time_seq")
     private Long seq;
 
-//    @Column(name = "time_id")
-//    private String id; // useDate + roomType;
-
     @Column(name = "use_date_time", nullable = false)
     private LocalDateTime useDateTime;
 

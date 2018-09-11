@@ -11,8 +11,8 @@ import me.namchae.meetingroom.booking.exception.DuplicateBookingException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,7 +32,6 @@ public class BookingService {
     @Transactional
     public Booking execute(BookingDto.CreateReq createReq) {
         final Booking booking = createReq.toEntity();
-        booking.addTimeLine(createReq);
 
         Booking returnBooking;
         try {
@@ -43,6 +42,7 @@ public class BookingService {
         return returnBooking;
     }
 
+    @Transactional(readOnly = true)
     public List<Booking> list(LocalDate useDate) {
         Pair<LocalDateTime, LocalDateTime> betweenTimes = getBetweenTimes(useDate);
         List<BookingTimeLine> timeLineList = bookingTimeLineRepository.findBookingTimeLineByUseDateTimeBetween(betweenTimes.getFirst(), betweenTimes.getSecond());
