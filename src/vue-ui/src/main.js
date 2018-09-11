@@ -6,6 +6,8 @@ import axios from 'axios'
 
 Vue.prototype.axios = axios
 Vue.prototype.moment = moment
+
+export const eventBus = new Vue()
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
