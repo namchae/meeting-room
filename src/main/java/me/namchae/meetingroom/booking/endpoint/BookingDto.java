@@ -33,6 +33,7 @@ public class BookingDto {
         @ApiModelProperty(notes = "예약자명", required = true, example = "남채희")
         private String booker;
 
+        @NotNull
         @FutureOrPresent
         @ApiModelProperty(notes = "예약날짜[현재또는 미래]", required = true, example = "2018-09-08")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")

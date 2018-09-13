@@ -6,31 +6,29 @@ import me.namchae.meetingroom.booking.domain.BookingTimeLine;
 import me.namchae.meetingroom.booking.endpoint.BookingTime;
 import me.namchae.meetingroom.booking.exception.DuplicateBookingException;
 import org.hamcrest.core.IsEqual;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class BookingServiceTest {
 
     @Autowired
@@ -38,9 +36,10 @@ public class BookingServiceTest {
 
     private BookingDto.CreateReq createReq1;
 
+
     private BookingDto.CreateReq createReq2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // given
         createReq1 = BookingDto.CreateReq.builder()
@@ -70,15 +69,18 @@ public class BookingServiceTest {
                 .build();
     }
 
-    @Test(expected = DuplicateBookingException.class)
+    @Test
     public void 예약_중첩요청_실패() {
-        // when
+        // given (before)
         // 3일뒤 반복주기 2회.
         bookingService.execute(createReq1);
 
-        // then
+        // when then
         // 10일뒤 반복주기 1회.
-        bookingService.execute(createReq2);
+        assertThrows(DuplicateBookingException.class, () ->{
+            bookingService.execute(createReq2);
+        });
+
     }
 
     @Test
@@ -133,9 +135,6 @@ public class BookingServiceTest {
         assertThat(expected.getBookingTime().getStartTime(), IsEqual.equalTo(responses.get(0).getBookingTime().getStartTime()));
         assertThat(expected.getBookingTime().getEndTime(), IsEqual.equalTo(responses.get(0).getBookingTime().getEndTime()));
         assertThat(expected.getRepetitionCount(), IsEqual.equalTo(responses.get(0).getRepetitionCount()));
-
     }
-
-
 
 }

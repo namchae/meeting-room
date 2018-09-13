@@ -1,14 +1,21 @@
 package me.namchae.meetingroom.booking.helper;
 
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
 import java.time.LocalTime;
 import java.util.List;
 
 public class TimeHelperTest {
 
+    private TimeHelper timeHelper;
+
+    @BeforeEach
+    void createPerson() {
+        timeHelper = new TimeHelper();
+    }
 
     @Test
     public void 시간범위_30분단위_리스트_생성_테스트() {

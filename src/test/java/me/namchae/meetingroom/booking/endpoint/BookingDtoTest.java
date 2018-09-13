@@ -1,20 +1,24 @@
 package me.namchae.meetingroom.booking.endpoint;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+
+
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class BookingDtoTest {
 
     private BookingDto.CreateReq createReq;
 
-
-
-
-    @Before
+    @BeforeEach
     public void setUp() {
         createReq = BookingDto.CreateReq.builder()
                 .roomType("회의실B")
@@ -23,29 +27,26 @@ public class BookingDtoTest {
                 .bookingTime(BookingTime.builder().startTime(LocalTime.of(11, 0))
                         .endTime(LocalTime.of(12, 0))
                         .build())
-                .repetitionCount(3)
+                .repetitionCount(2)
                 .build();
     }
 
     @Test
     public void DTO_테스트() {
-//        BookingDto.CreateReq tmpObj = BookingDto.CreateReq.builder()
-//                .roomType(null)
-//                .booker("예약자")
-//                .useDate(LocalDate.now())
-//                .startTime(LocalTime.of(11, 0))
-//                .endTime(LocalTime.of(12, 0))
-//                .repetitionCount(3)
-//                .build();
-//        validator.validateProperty(tmpObj, "roomType");
+        createReq.toEntity();
     }
 
     @Test
-    public void 반복주기_테스트() {
-        System.out.println(
-        createReq.toString());
+    public void RequestDto_createReq_예약_반복주기_리스트_테스트() {
+        // given (before)
 
-        System.out.println(createReq.repetitionDate());
+        // when
+        List<LocalDate> repetitionDates = createReq.repetitionDate();
+
+        // then
+        assertThat(repetitionDates.size(), is(2));
+        assertThat(repetitionDates.get(0), is(LocalDate.now()));
+        assertThat(repetitionDates.get(1), is(LocalDate.now().plusDays(7)));
     }
 
 }
